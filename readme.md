@@ -8,18 +8,18 @@
 - contianer specs are defined in separate Dockerfiles under build/
 - Deployment is done using docker-compose.yml
 - Fuctionality is incomplete at the moment. Only API GET and POST functionality is implemented
-- 
+
 
 ## How to run the app
 in the root folder run the shell script "runme.sh"
 ./runme.sh
 
 ## API URLs
-http://localhost:5000/
-http://localhost:5000/people
-http://localhost:5000/people/<first_name> e.g. http://localhost:5000/people/Aldis
-http://localhost:5000/
-http://localhost:5000/<project_name> e.g.http://localhost:5000/project/Hatity
+- http://localhost:5000/
+- http://localhost:5000/people
+- http://localhost:5000/people/<first_name> e.g. http://localhost:5000/people/Aldis
+- http://localhost:5000/
+- http://localhost:5000/<project_name> e.g.http://localhost:5000/project/Hatity
 
 ## PUT funciton
 ### People API
