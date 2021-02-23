@@ -1,0 +1,19 @@
+FROM mysql
+
+# RUN mkdir /data
+# RUN chmod 755 /data
+
+# ADD . /code
+
+# WORKDIR /code
+
+# RUN apt-get update -y
+# RUN apt-get install -y python3-pip python-dev build-essential
+# RUN apt-get -y install python-pip
+
+# RUN pip install -r ./build/requirements.txt
+
+# RUN python ./app/json2csv.py
+# ADD ./data/* /data/
+ADD ./conf/mysql_custom.cnf /etc/mysql/conf.d/
+RUN chmod 755 /etc/mysql/conf.d/mysql_custom.cnf

@@ -1,0 +1,3 @@
+[mysqld]
+secure-file-priv = "/data"
+default_authentication_plugin=mysql_native_password

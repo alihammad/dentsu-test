@@ -1,0 +1,15 @@
+FROM python
+
+ADD . /code
+
+WORKDIR /code
+
+RUN apt-get update -y
+RUN apt-get install -y python-pymysql
+
+RUN pip install -r ./build/requirements.txt
+RUN apt-get update -y
+RUN apt-get install vim -y 
+
+CMD ["python", "./app/api.py"]
+# CMD ["python", "./app/people.py"]

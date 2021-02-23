@@ -1,0 +1,19 @@
+# flask
+# flask-restful
+# flask-mysql
+# flask-ext
+# flask-sqlalchemy
+# mysql-connector
+# pandas
+# # mysql-connector-python
+
+flask
+flask_sqlalchemy
+marshmallow_sqlalchemy
+flask_marshmallow
+marshmallow
+flask_restful
+pandas
+mysqlclient 
+pymysql
+
