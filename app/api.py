@@ -3,7 +3,7 @@ from flask_restful import Resource, Api, abort, reqparse
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow_sqlalchemy import ModelSchema
 from marshmallow import fields
-from models import db, PeopleModel
+from models import db, PeopleModel, ProjectModel
 
 app = Flask(__name__)
  
@@ -20,28 +20,17 @@ def create_table():
     db.create_all()
 
 class PeoplesView(Resource):
-    def create_session(config):
-        engine = create_engine(config['SQLALCHEMY_DATABASE_URI'])
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        session._model_changes = {}
-        return session 
-        
     def get(self):
         people = PeopleModel.query.all()
         return {'People':list(x.json() for x in people)}
  
     def post(self):
-        sess = create_session(app.config)
         data = request.get_json()
         new_people = PeopleModel(data["first_name"], data["last_name"], data["email"], data["address"], data["skills"])
-        # db.seesion.add(new_people)
-        # db.session.commit()
-        sess.add(new_people)
-        sess.commit()
+        db.session.add(new_people)
+        db.session.commit()
         return new_people.json(),201
         
-
 class PeopleView(Resource):
     def get(self,first_name):
         people = PeopleModel.query.filter_by(first_name=first_name).first()
@@ -123,15 +112,15 @@ class People(Resource):
         else:
             return {'message': 'Record not found'},404
 
-api.add_resource(PeoplesView, '/people','/peoples','/')
+api.add_resource(PeoplesView, '/people','/peoples', 'people/','/')
 api.add_resource(PeopleView,'/people/<string:first_name>', '/peoples/<string:first_name>')
 
 
-#####
+############
 
-Projects
+## Projects
 
-######
+############
 
 
 class ProjectsView(Resource):
@@ -142,7 +131,7 @@ class ProjectsView(Resource):
     def post(self):
         data = request.get_json()
         new_project = ProjectModel(data["project_name"],data["date_posted"],data["department"],data["description"],data["skills"])
-        db.seesion.add(new_project)
+        db.session.add(new_project)
         db.session.commit()
         return new_project.json(),201
         
@@ -181,6 +170,27 @@ class ProjectView(Resource):
         else:
             return {'message': 'record not found'},404
 
+class ProjectSkillsFinder(Resource):
+    def get(self, skill):
+        app.logger.info("Find skills in a project")
+        projects = ProjectModel.query.filter_by(skills=skills).first(): 
+        
+        if projects:
+            return projects.json()
+        return {'message', 'Skills not found'} ,404
+        
+class ProjectPeopleFinder(Resource):
+    def get(self,skill):
+        app.logger.info("Find people with similar skills")
+        # app.logger.info("Search query: {}".format(skill))
+
+        people = PeopleModel.query.filter_by(skill=skill)
+        # project = ProjectModel.query.filter_by(skills=skill).first()
+        
+        if people:
+            return people.json()
+        return {'message':'record not found'},404
+ 
 class ProjectList(Resource):
     def get(self):
         projects = ProjectModel.query.all()
@@ -228,8 +238,10 @@ class Project(Resource):
         else:
             return {'message': 'Record not found'},404
 
-api.add_resource(ProjectsView, '/project','/projects','/')
+api.add_resource(ProjectsView, '/project','/projects','/', 'project/', 'projects/')
 api.add_resource(ProjectView,'/project/<string:project_name>', '/projects/<string:project_name>')
+api.add_resource(ProjectResourceFinder, '/project/resourcefinder/<string:skill>')
+api.add_resource(ProjectSkillsFinder, '/project/skill/<string:skill>')
 
 app.debug = True
 
