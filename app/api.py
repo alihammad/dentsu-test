@@ -126,6 +126,111 @@ class People(Resource):
 api.add_resource(PeoplesView, '/people','/peoples','/')
 api.add_resource(PeopleView,'/people/<string:first_name>', '/peoples/<string:first_name>')
 
+
+#####
+
+Projects
+
+######
+
+
+class ProjectsView(Resource):
+    def get(self):
+        projects = ProjectModel.query.all()
+        return {'Projects':list(x.json() for x in projects)}
+ 
+    def post(self):
+        data = request.get_json()
+        new_project = ProjectModel(data["project_name"],data["date_posted"],data["department"],data["description"],data["skills"])
+        db.seesion.add(new_project)
+        db.session.commit()
+        return new_project.json(),201
+        
+
+class ProjectView(Resource):
+    def get(self,project_name):
+        project = ProjectModel.query.filter_by(project_name=project_name).first()
+        if project:
+            return project.json()
+        return {'message':'record not found'},404
+ 
+    def put(self,project_name):
+        data = request.get_json()
+        project = ProjectModel.query.filter_by(project_name=project_name).first()
+ 
+        if project:
+            project.project_name = data['project_name']
+            project.date_posted = data['date_posted']
+            project.department = data['department']
+            project.description = data['description']
+            project.skills = data['skills']            
+        else:
+            project = ProjectModel(project_name=project_name,**data)
+ 
+        db.session.add(project)
+        db.session.commit()
+ 
+        return project.json()
+ 
+    def delete(self,project_name):
+        project = ProjectModel.query.filter_by(project_name=project_name).first()
+        if project:
+            db.session.delete(project)
+            db.session.commit()
+            return {'message':'Deleted'}
+        else:
+            return {'message': 'record not found'},404
+
+class ProjectList(Resource):
+    def get(self):
+        projects = ProjectModel.query.all()
+        return {'Projects':list(x.json() for x in projects)}
+ 
+    def post(self):
+        data = request.get_json()
+        new_project = ProjectModel((data["project_name"],data["date_posted"],data["department"],data["description"],data["skills"]))
+        db.session.add(new_project)
+        db.session.commit()
+        return new_project.json(),201
+
+class Project(Resource):
+    def get(self,project_name):
+        project = ProjectModel.query.filter_by(project_name=project_name).first()
+        if project:
+            return project.json()
+        return {'message':'Record not found'},404
+ 
+    def put(self,project_name):
+        data = request.get_json()
+ 
+        project = ProjectModel.query.filter_by(project_name=project_name).first()
+ 
+        if project:
+            project.project_name = data['project_name']
+            project.date_posted = data['date_posted']
+            project.department = data['department']
+            project.description = data['description']
+            project.skills = data['skills']          
+        else:
+            project = ProjectModel(project_name=project_name,**data)
+ 
+        db.session.add(project)
+        db.session.commit()
+ 
+        return project.json()
+ 
+    def delete(self,project_name):
+        project = ProjectModel.query.filter_by(project_name=project_name).first()
+        if project:
+            db.session.delete(project)
+            db.session.commit()
+            return {'message':'Deleted'}
+        else:
+            return {'message': 'Record not found'},404
+
+api.add_resource(ProjectsView, '/project','/projects','/')
+api.add_resource(ProjectView,'/project/<string:project_name>', '/projects/<string:project_name>')
+
 app.debug = True
 
 if __name__ == "__main__":
