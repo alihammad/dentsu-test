@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  web:
+    container_name: "dentsu-web"
+    build:
+      context: .
+      dockerfile: ./build/web_build
+    links: 
+      - db
+    ports:
+     - "5000:5000"
+    volumes: 
+      - ./home/ali/projects/dentsu:/tmp
+  db:
+    container_name: "dentsu-mysql"
+    build:
+      context: .
+      dockerfile: ./build/db_build
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'skillfinder'
+      MYSQL_USER: 'root'
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
+      - ./data:/data
+      

@@ -1,0 +1,71 @@
+#
+
+FROM ubuntu:16.04
+
+MAINTANER Your Name "youremail@domain.tld"
+
+RUN apt-get update -y && \
+    apt-get install -y python-pip python-dev
+
+# We copy just the requirements.txt first to leverage Docker cache
+COPY ./requirements.txt /app/requirements.txt
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+COPY . /app
+
+ENTRYPOINT [ "python" ]
+
+CMD [ "app.py" ]
+
+
+1. MAINTAINER sets the Author field of the image (useful when pushing to Docker Hub)
+2. && \ isn’t Docker specific, but tells Linux to run the next command as part of the existing line (instead of using multiple RUN directives, you can use just one)
+3. COPY copies files from the first parameter (the source .) to the destination parameter (in this case, /app)
+4. WORKDIR sets the working directory (all following instructions operate within this directory); you may use WORKDIR as often as you like
+5. ENTRYPOINT configures the container to run as an executable; only the last ENTRYPOINT instruction executes
+
+
+#
+
+FROM python:3.4-alpine
+ADD . /code
+WORKDIR /code
+RUN pip install -r requirements.txt
+CMD ["python", "app.py"]
+
+
+
+#
+
+flask app:
+
+from flask import Flask
+from redis import Redis
+
+app = Flask(__name__)
+redis = Redis(host='redis', port=6379)
+
+@app.route('/')
+def hello():
+    count = redis.incr('hits')
+    return 'Hello World! I have been seen {} times.\n'.format(count)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", debug=True)
+
+
+
+#
+docker-compose.yml
+
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+     - "5000:5000"
+  redis:
+    image: "redis:alpine"
