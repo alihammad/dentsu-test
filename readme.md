@@ -1,13 +1,13 @@
 # Data Engineering Challenge
 
 ## What have accomplised so far
-- Created separeated container for web and database 
-- Used Python and Flask for API development
-- MySql is the tool of choice for database
-- Web app can communicate with the databse server of a different container
-- contianer specs are defined in separate Dockerfiles under build/
-- Deployment is done using docker-compose.yml
-- Fuctionality is incomplete at the moment. Only API GET and POST functionality is implemented
+1- Created separeated container for web and database 
+2- Used Python and Flask for API development
+3- MySql is the tool of choice for database
+4- Web app can communicate with the databse server of a different container
+5- contianer specs are defined in separate Dockerfiles under build/
+6- Deployment is done using docker-compose.yml
+7- Fuctionality is incomplete at the moment. Only API GET and POST functionality is implemented
 
 
 ## How to run the app
